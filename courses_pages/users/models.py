@@ -29,11 +29,12 @@ class MyUserManager(BaseUserManager):
         if not born_date:
             raise ValueError('Users must have a date of birth')
 
+
         user = self.model(
             email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
-            born_date=born_date
+            born_date=born_date,
         )
 
         user.set_password(password)
@@ -44,13 +45,12 @@ class MyUserManager(BaseUserManager):
         """
             creates and saves a superuser with the given email and password.
         """
-
         user = self.create_user(
             email=self.normalize_email(email),
             password=password,
             first_name=first_name,
             last_name=last_name,
-            born_date=born_date 
+            born_date=born_date,
         )
 
         user.is_admin = True
@@ -100,7 +100,7 @@ class User(AbstractBaseUser):
         related_name='users'
     )
 
-    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='user', verbose_name='pais de residencia')
+    country = models.ForeignKey(Country, on_delete=models.PROTECT, related_name='user',blank=True, null=True, verbose_name='pais de residencia')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'born_date']

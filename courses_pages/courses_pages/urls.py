@@ -14,10 +14,23 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# courses_pages/urls.py (o el nombre de tu proyecto)
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+def home_view(request):
+    return HttpResponse("Bienvenido a la API")
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include('users.api.urls')),  # Tus rutas API
+    path('api/', include('categoria.api.urls')),  # Tus rutas API
+    path('api/', include('programaAcademico.api.urls')),  # Tus rutas API
+    path('api/', include('registra.api.urls')),  # Tus rutas API
+    path('api/', include('constade.api.urls')),  # Tus rutas API
+    path('', home_view),  # Nueva ruta para la página raíz
+    
+
     #path('admin/', admin.site.urls),
-    path('api/cursos/', include('cursos.urls')),
 ]

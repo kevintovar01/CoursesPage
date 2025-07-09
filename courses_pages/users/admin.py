@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import UserRole, User, Role
+
+#models
+from .models import UserRole, User, Role, Country
 
 class UserRoleInLine(admin.TabularInline):
     # Inline using the through model for the User.roles M2M
@@ -32,3 +34,15 @@ class MyUserAdmin(UserAdmin):
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name',)
+    search_fields = ('name',)
+
+
+@admin.register(UserRole)
+class UserRoleAdmin(admin.ModelAdmin):
+    list_display = ('user', 'role')
+    search_fields = ('user__email', 'role__name')
+
+@admin.register(Country)
+class CountryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
