@@ -30,4 +30,6 @@ urlpatterns = [
     path('api/', include('constade.api.urls')),  # Tus rutas API
     path('', home_view),  # Nueva ruta para la página raíz
     
+
+    #path('admin/', admin.site.urls),
 ]
