@@ -75,7 +75,13 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name
-    
+
+class Phone(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='phones')
+    number = models.CharField(max_length=15)
+    class Meta:
+        db_table = 'public"."phones'
+
 class User(AbstractBaseUser):
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     first_name = models.CharField(max_length=30)
