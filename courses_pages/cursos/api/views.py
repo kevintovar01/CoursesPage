@@ -13,6 +13,7 @@ from .serializers import (
     RealizaSerializer,
     AdquiereSerializer
 )
+from time import timezone
 
 # Create your views here.
 
@@ -91,27 +92,52 @@ class EstudianteMatriculadoSerializer(serializers.Serializer):
 class CursoViewSet(viewsets.ModelViewSet):
     queryset = Curso.objects.all()
     serializer_class = CursoSerializer
+    permission_classes = [permissions.IsAuthenticated, IsDocenteOrAdmin]
 
-    @action(detail=True, methods=['get'], permission_classes=[IsDocenteOrAdmin])
+    def perform_create(self, serializer):
+        return serializer.save(usuario=self.request.user)
+    
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[permissions.IsAuthenticated, IsDocenteOrAdmin],
+        url_path='mis-cursos'
+    )
+    def cursos_creados(self, request):
+        serializers = self.get_serializer(request.user.cursos_creados, many=True)
+        return Response(serializers.data)
+
+    @action(
+        detail=True,
+        methods=['get'],
+        permission_classes=[permissions.IsAuthenticated, IsDocenteOrAdmin]
+    )
     def estudiantes_matriculados(self, request, pk=None):
         """
         2. Estudiantes matriculados en un curso específico.
-        Accesible solo para Docentes y Admins.
+           Accesible solo para Docentes y Admins.
         """
         try:
             curso = self.get_object()
-            adquisiciones = Adquiere.objects.filter(curso=curso).select_related('usuario')
-            serializer = EstudianteMatriculadoSerializer(adquisiciones, many=True)
-            return Response(serializer.data)
         except Curso.DoesNotExist:
-            return Response({"error": "El curso no existe."}, status=status.HTTP_404_NOT_FOUND)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "El curso no existe."},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        adquisiciones = Adquiere.objects.filter(curso=curso).select_related('usuario')
+        serializer = EstudianteMatriculadoSerializer(adquisiciones, many=True)
+        return Response(serializer.data)
+    
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            # Permitir a todos los usuarios autenticados ver los cursos
+            return [permissions.IsAuthenticated(), IsAdmin()]
+        return [permissions.IsAuthenticated(), IsDocenteOrAdmin()]
 
     @action(detail=True, methods=['get'])
     def recursos(self, request, pk=None):
         """
         3. Uso de recursos por curso
+        {id}/recurso
         """
         try:
             curso = self.get_object()
@@ -151,6 +177,10 @@ class CursoViewSet(viewsets.ModelViewSet):
 class ModuloViewSet(viewsets.ModelViewSet):
     queryset = Modulo.objects.all()
     serializer_class = ModuloSerializer
+    permission_classes = [permissions.IsAuthenticated, IsDocenteOrAdmin]
+    
+    def get_queryset(self):
+        return Modulo.objects.filter(curso__usuario=self.request.user)
 
 class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
@@ -163,7 +193,8 @@ class RealizaViewSet(viewsets.ModelViewSet):
 class AdquiereViewSet(viewsets.ModelViewSet):
     queryset = Adquiere.objects.all()
     serializer_class = AdquiereSerializer
-    permission_classes = [IsEstudiante]
+
+     
 
     def get_queryset(self):
         """

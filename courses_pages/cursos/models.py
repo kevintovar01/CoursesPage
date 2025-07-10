@@ -60,12 +60,13 @@ class Adquiere(models.Model):
         on_delete=models.CASCADE,
         related_name='cursos_adquiridos'
     )
-    fechaInicio = models.DateField()
-    fechaFinalizacion = models.DateField()
+    fechaInicio = models.DateTimeField(auto_now_add=True)
+    fechaFinalizacion = models.DateTimeField(null=True, blank=True)   # <— aquí
     porcAvance = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        validators=[MinValueValidator(0), MaxValueValidator(100)]
+        validators=[MinValueValidator(0), MaxValueValidator(100)],
+        default=0
     )
 
     class Meta:

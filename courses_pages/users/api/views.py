@@ -79,7 +79,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         if self.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy']:
             return [permissions.IsAuthenticated(), IsAdminRole()]
         # ...pero para retrieve, debe estar autenticado
-        return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
 
 
 class UserViewSet(viewsets.ModelViewSet):
