@@ -30,6 +30,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
@@ -158,3 +159,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Controla la redirección por defecto de Django al hacer login/logout
+LOGIN_REDIRECT_URL = '/api/users/me/'
+LOGOUT_REDIRECT_URL = '/api-auth/login/'

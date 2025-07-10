@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/', include('programaAcademico.api.urls')),  # Tus rutas API
     path('api/', include('registra.api.urls')),  # Tus rutas API
     path('api/', include('constade.api.urls')),  # Tus rutas API
+    path('api-auth/', include('rest_framework.urls')),  
     path('', home_view),  # Nueva ruta para la página raíz
     
 
