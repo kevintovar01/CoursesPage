@@ -72,6 +72,8 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         # Permitir que cualquiera se registre...
         if self.action == 'create':
             return [permissions.AllowAny()]
+        if self.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated(), IsAdminRole()]
         # ...pero para retrieve, debe estar autenticado
         return [permissions.IsAuthenticated()]
 
