@@ -68,3 +68,5 @@ class UserViewSet(viewsets.ModelViewSet):
             perms = [permissions.IsAuthenticated, IsAdminRole]
 
         return [perm() for perm in perms]
+
+
