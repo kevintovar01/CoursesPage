@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Curso(models.Model):
     """Modelo de Curso"""
@@ -50,3 +51,30 @@ class Realiza(models.Model):
 
     def __str__(self):
         return f"{self.usuario} solicita realizar {self.curso}"
+
+class Adquiere(models.Model):
+    """Modelo para la adquisición de un curso por parte de un usuario."""
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    fechaInicio = models.DateField()
+    fechaFinalizacion = models.DateField()
+    porcAvance = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
+
+    class Meta:
+        unique_together = ('curso', 'usuario')
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(fechaInicio__lte=models.F('fechaFinalizacion')),
+                name='fechaInicio_lte_fechaFinalizacion'
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.usuario} adquiere {self.curso}"
