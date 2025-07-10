@@ -12,9 +12,12 @@ from rest_framework.decorators import action
 from ..models import Role, Country, User
 #serializers
 from .serializers import RoleSerializer, CountrySerializer, UserSerializer, RegistrationSerializer
+<<<<<<< HEAD
 
 # queryset
 from ..services import get_registered_users_detailed
+=======
+>>>>>>> cristian
 
 class IsAdminRole(permissions.BasePermission):
     """
@@ -66,7 +69,6 @@ class CountryViewSet(viewsets.ModelViewSet):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
-
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()

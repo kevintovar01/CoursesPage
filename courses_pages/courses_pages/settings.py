@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'registra',
     'programaAcademico',
     'rest_framework.authtoken',
-
+    'reseña',
     'users',
     'cursos',
 ]
