@@ -25,6 +25,7 @@ def home_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.api.urls')),  # Tus rutas API
+    path('api/', include('cursos.api.urls')), # Ruta para la app cursos
     path('api/', include('categoria.api.urls')),  # Tus rutas API
     path('api/', include('programaAcademico.api.urls')),  # Tus rutas API
     path('api/', include('registra.api.urls')),  # Tus rutas API

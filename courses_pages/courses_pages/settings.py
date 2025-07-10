@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
 
     'users',
+    'cursos',
 ]
 # Use custom User model
 AUTH_USER_MODEL = 'users.User'
