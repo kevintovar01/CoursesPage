@@ -12,6 +12,12 @@ from rest_framework.decorators import action
 from ..models import Role, Country, User
 #serializers
 from .serializers import RoleSerializer, CountrySerializer, UserSerializer, RegistrationSerializer
+<<<<<<< HEAD
+=======
+
+# queryset
+from ..services import get_registered_users_detailed
+>>>>>>> origin/kevin
 
 class IsAdminRole(permissions.BasePermission):
     """
@@ -64,6 +70,10 @@ class CountryViewSet(viewsets.ModelViewSet):
     serializer_class = CountrySerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/kevin
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
@@ -72,9 +82,18 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         # Permitir que cualquiera se registre...
         if self.action == 'create':
             return [permissions.AllowAny()]
+<<<<<<< HEAD
         # ...pero para retrieve, debe estar autenticado
         return [permissions.IsAuthenticated()]
 
+=======
+        if self.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy']:
+            return [permissions.IsAuthenticated(), IsAdminRole()]
+        # ...pero para retrieve, debe estar autenticado
+        return [permissions.IsAuthenticated()]
+
+
+>>>>>>> origin/kevin
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -84,11 +103,22 @@ class UserViewSet(viewsets.ModelViewSet):
         # get  /api/users/me/
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+<<<<<<< HEAD
+=======
+    
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def registered(self, request):
+        data = get_registered_users_detailed()
+        return Response(list(data))
+
+>>>>>>> origin/kevin
 
     def get_permissions(self):
         """
             for POST we use allowAny; for the other things we use IsAuthenticated.
         """
+        if self.action == 'registered':
+            return [permissions.IsAuthenticated(), IsAdminRole()]
 
         if self.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy']:
             perms = [permissions.IsAuthenticated]
