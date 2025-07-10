@@ -13,6 +13,9 @@ from ..models import Role, Country, User
 #serializers
 from .serializers import RoleSerializer, CountrySerializer, UserSerializer, RegistrationSerializer
 
+# queryset
+from ..services import get_registered_users_detailed
+
 class IsAdminRole(permissions.BasePermission):
     """
         Permission to only allow admins to access the view.
@@ -64,6 +67,7 @@ class CountryViewSet(viewsets.ModelViewSet):
     serializer_class = CountrySerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
 
+
 class RegistrationViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = RegistrationSerializer
@@ -77,6 +81,7 @@ class RegistrationViewSet(viewsets.ModelViewSet):
         # ...pero para retrieve, debe estar autenticado
         return [permissions.IsAuthenticated()]
 
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -86,11 +91,19 @@ class UserViewSet(viewsets.ModelViewSet):
         # get  /api/users/me/
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def registered(self, request):
+        data = get_registered_users_detailed()
+        return Response(list(data))
+
 
     def get_permissions(self):
         """
             for POST we use allowAny; for the other things we use IsAuthenticated.
         """
+        if self.action == 'registered':
+            return [permissions.IsAuthenticated(), IsAdminRole()]
 
         if self.action in ['list', 'retrieve', 'update', 'partial_update', 'destroy']:
             perms = [permissions.IsAuthenticated]
