@@ -54,10 +54,11 @@ class Realiza(models.Model):
 
 class Adquiere(models.Model):
     """Modelo para la adquisición de un curso por parte de un usuario."""
-    curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
+    curso = models.ForeignKey(Curso, on_delete=models.CASCADE, related_name='adquiere')
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='cursos_adquiridos'
     )
     fechaInicio = models.DateField()
     fechaFinalizacion = models.DateField()
